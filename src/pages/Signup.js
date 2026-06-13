@@ -1,4 +1,3 @@
-import { Card, CardBody, CardHeader, Container, Form, FormGroup, Label, Input, Button, Row, Col, FormFeedback } from "reactstrap";
 import Base from "../components/Base";
 import { useState } from "react";
 import { signUp } from "../services/user-service";
@@ -81,87 +80,86 @@ const Signup = () => {
 
     return (
         <Base>
-            <Container className="form-page">
-                <Row className="justify-content-center">
-                    <Col lg="6" md="8">
-                        <Card className="form-card">
-                            <CardHeader>
+            <div className="container form-page">
+                <div className="row justify-content-center">
+                    <div className="col-lg-6 col-md-8">
+                        <div className="card form-card">
+                            <div className="card-header">
                                 <p className="eyebrow mb-2">New account</p>
                                 <h1>Create account</h1>
-                            </CardHeader>
+                            </div>
 
-                            <CardBody>
-                                <Form onSubmit={submitForm}>
+                            <div className="card-body">
+                                <form onSubmit={submitForm}>
 
-                                    <FormGroup>
-                                        <Label for="name">Name</Label>
-                                        <Input
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="name">Name</label>
+                                        <input
+                                            className={`form-control ${errors.name ? "is-invalid" : ""}`}
                                             type="text"
                                             placeholder="Danish Khan"
                                             id="name"
                                             name="name"
                                             onChange={handleChange}
                                             value={data.name}
-                                            invalid={Boolean(errors.name)}
                                         />
-                                        <FormFeedback>{errors.name}</FormFeedback>
-                                    </FormGroup>
+                                        {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+                                    </div>
 
-                                    <FormGroup>
-                                        <Label for="email">Email</Label>
-                                        <Input
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="email">Email</label>
+                                        <input
+                                            className={`form-control ${errors.email ? "is-invalid" : ""}`}
                                             type="email"
                                             placeholder="danish@example.com"
                                             id="email"
                                             name="email"
                                             onChange={handleChange}
                                             value={data.email}
-                                            invalid={Boolean(errors.email)}
                                         />
-                                        <FormFeedback>{errors.email}</FormFeedback>
-                                    </FormGroup>
+                                        {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+                                    </div>
 
-                                    <FormGroup>
-                                        <Label for="password">Password</Label>
-                                        <Input
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="password">Password</label>
+                                        <input
+                                            className={`form-control ${errors.password ? "is-invalid" : ""}`}
                                             type="password"
                                             placeholder="3 to 10 characters"
                                             id="password"
                                             name="password"
                                             onChange={handleChange}
                                             value={data.password}
-                                            invalid={Boolean(errors.password)}
                                         />
-                                        <FormFeedback>{errors.password}</FormFeedback>
-                                    </FormGroup>
+                                        {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                                    </div>
 
-                                    <FormGroup>
-                                        <Label for="about">About</Label>
-                                        <Input
-                                            type="textarea"
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="about">About</label>
+                                        <textarea
+                                            className={`form-control ${errors.about ? "is-invalid" : ""}`}
                                             placeholder="Short profile summary"
                                             id="about"
                                             name="about"
                                             onChange={handleChange}
                                             value={data.about}
-                                            invalid={Boolean(errors.about)}
                                         />
-                                        <FormFeedback>{errors.about}</FormFeedback>
-                                    </FormGroup>
+                                        {errors.about && <div className="invalid-feedback">{errors.about}</div>}
+                                    </div>
 
                                     <div className="form-actions">
-                                        <Button color="primary" type="submit" disabled={isSubmitting}>
+                                        <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
                                             {isSubmitting ? "Creating..." : "Create account"}
-                                        </Button>
-                                        <Button onClick={resetData} color="secondary" type="button" outline>Reset</Button>
+                                        </button>
+                                        <button className="btn btn-outline-secondary" onClick={resetData} type="button">Reset</button>
                                     </div>
-                                </Form>
+                                </form>
 
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </Base>
     )

@@ -1,4 +1,3 @@
-import { Form, Row, Container, Col, Card, CardBody, CardHeader, FormGroup, Label, Input, Button } from "reactstrap";
 import Base from "../components/Base";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -44,19 +43,20 @@ const Login = () => {
 
     return (
         <Base>
-            <Container className="form-page">
-                <Row className="justify-content-center">
-                    <Col lg="5" md="7">
-                        <Card className="form-card">
-                            <CardHeader>
+            <div className="container form-page">
+                <div className="row justify-content-center">
+                    <div className="col-lg-5 col-md-7">
+                        <div className="card form-card">
+                            <div className="card-header">
                                 <p className="eyebrow mb-2">Welcome back</p>
                                 <h1>Login</h1>
-                            </CardHeader>
-                            <CardBody>
-                                <Form onSubmit={submitForm}>
-                                    <FormGroup>
-                                        <Label for="username">Email</Label>
-                                        <Input
+                            </div>
+                            <div className="card-body">
+                                <form onSubmit={submitForm}>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="username">Email</label>
+                                        <input
+                                            className="form-control"
                                             type="email"
                                             id="username"
                                             name="username"
@@ -65,10 +65,11 @@ const Login = () => {
                                             placeholder="danish@example.com"
                                             required
                                         />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="password">Password</Label>
-                                        <Input
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="password">Password</label>
+                                        <input
+                                            className="form-control"
                                             type="password"
                                             id="password"
                                             name="password"
@@ -77,22 +78,22 @@ const Login = () => {
                                             placeholder="Enter password"
                                             required
                                         />
-                                    </FormGroup>
+                                    </div>
 
                                     <div className="form-actions">
-                                        <Button color="primary" type="submit" disabled={isSubmitting}>
+                                        <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
                                             {isSubmitting ? "Logging in..." : "Login"}
-                                        </Button>
-                                        <Button type="button" outline color="secondary" onClick={resetForm}>
+                                        </button>
+                                        <button className="btn btn-outline-secondary" type="button" onClick={resetForm}>
                                             Reset
-                                        </Button>
+                                        </button>
                                     </div>
-                                </Form>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </Base>
     )
