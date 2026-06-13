@@ -76,6 +76,34 @@ Create a production build:
 npm run build
 ```
 
+## Docker Runtime
+
+Build the production image:
+
+```bash
+docker build --build-arg REACT_APP_API_BASE_URL=http://localhost:9090 -t blog-frontend .
+```
+
+Run the production container:
+
+```bash
+docker run --rm -p 3000:80 blog-frontend
+```
+
+Or use Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+For a deployed environment, pass the live backend URL at build time:
+
+```bash
+docker build --build-arg REACT_APP_API_BASE_URL=https://api.your-domain.com -t blog-frontend .
+```
+
+The container serves the React build through Nginx and supports client-side routing refreshes for pages like `/login` and `/signup`.
+
 ## Portfolio Positioning
 
 This frontend supports full-stack role screening while keeping the project backend-led. The backend repository contains the main engineering depth: Spring Boot 3, Spring Security 6, JWT, Docker, Jenkins, tests, Actuator, and the deployment/microservices migration roadmap.

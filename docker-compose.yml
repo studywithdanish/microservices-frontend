@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL:-http://localhost:9090}
+    container_name: blog-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    restart: unless-stopped
