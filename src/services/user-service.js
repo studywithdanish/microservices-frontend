@@ -1,8 +1,13 @@
 import { myAxios } from "./helper";
 
-export const signUp=(user)=>{
-
+export const signUp = (user) => {
     return myAxios
-    .post("/api/v1/auth/register",user)
-    .then((response)=>response.data)
+        .post("/api/v1/auth/register", user)
+        .then((response) => response.data);
+};
+
+export const login = (credentials) => {
+    return myAxios
+        .post("/api/v1/auth/login", credentials)
+        .then((response) => response.data);
 };

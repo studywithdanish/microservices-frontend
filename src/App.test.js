@@ -1,8 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+jest.mock('./services/helper', () => ({
+  API_BASE_URL: 'http://localhost:9090',
+}));
+
+jest.mock('./services/user-service', () => ({
+  login: jest.fn(),
+  signUp: jest.fn(),
+}));
+
+test('renders home page heading', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByText(/blog platform client/i)).toBeInTheDocument();
 });

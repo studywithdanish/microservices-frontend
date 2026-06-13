@@ -1,0 +1,268 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f6f8fb;
+  color: #1f2937;
+}
+
+.app-main {
+  flex: 1;
+}
+
+.app-navbar {
+  padding: 0.9rem 1.25rem;
+  background: #111827;
+  border-bottom: 4px solid #2dd4bf;
+}
+
+.brand-mark {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.app-navbar .navbar-brand,
+.app-navbar .navbar-brand:hover,
+.app-navbar .navbar-brand:focus {
+  color: #ffffff;
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+  color: #ffffff;
+}
+
+.app-navbar .nav-cta {
+  color: #111827 !important;
+  background: #facc15 !important;
+  border-radius: 6px;
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+  font-weight: 600;
+}
+
+.hero-section {
+  padding: 5rem 0 4rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.hero-section h1,
+.content-section h1 {
+  max-width: 760px;
+  margin: 0;
+  color: #111827;
+  font-size: 3rem;
+  line-height: 1.08;
+  font-weight: 750;
+}
+
+.hero-copy,
+.lead {
+  max-width: 680px;
+  margin: 1.25rem 0 0;
+  color: #4b5563;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.eyebrow {
+  margin-bottom: 0.75rem;
+  color: #0f766e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.api-panel,
+.feature-card,
+.form-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 14px 35px rgba(17, 24, 39, 0.08);
+}
+
+.api-panel {
+  padding: 1.25rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.78rem;
+}
+
+.api-url {
+  overflow-wrap: anywhere;
+  border-radius: 6px;
+  padding: 0.85rem;
+  background: #f3f4f6;
+  color: #374151;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.92rem;
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.panel-grid div,
+.info-list div {
+  border-radius: 6px;
+  padding: 0.85rem;
+  background: #f9fafb;
+}
+
+.panel-grid strong,
+.panel-grid span,
+.info-list strong,
+.info-list span {
+  display: block;
+}
+
+.panel-grid span,
+.info-list span {
+  margin-top: 0.25rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.content-section {
+  padding: 4rem 0;
+}
+
+.section-heading {
+  max-width: 760px;
+  margin-bottom: 1.5rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 2rem;
+  font-weight: 750;
+}
+
+.section-heading p {
+  margin-top: 0.6rem;
+  color: #6b7280;
+}
+
+.feature-card {
+  height: 100%;
+  padding: 1.25rem;
+}
+
+.feature-card h3 {
+  margin-bottom: 0.65rem;
+  color: #111827;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.feature-card p {
+  margin-bottom: 0;
+  color: #5b6472;
+  line-height: 1.6;
+}
+
+.narrow-container {
+  max-width: 820px;
+}
+
+.info-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.form-page {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+.form-card .card-header {
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.form-card h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.65rem;
+  font-weight: 750;
+}
+
+.form-card textarea {
+  min-height: 130px;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 0;
+  }
+
+  .hero-section h1,
+  .content-section h1 {
+    font-size: 2.15rem;
+  }
+
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-footer {
+    flex-direction: column;
+  }
+}

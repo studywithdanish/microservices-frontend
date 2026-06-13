@@ -1,14 +1,19 @@
 import CustomNavbar from "./CustomNavbar";
 
-const Base=({title="welcome to our website", children})=>{
+const Base = ({ children }) => {
     return (
-            <div className="container-fluid p-0 m-0">
-                <CustomNavbar />
+        <div className="app-shell">
+            <CustomNavbar />
 
+            <main className="app-main">
                 {children}
+            </main>
 
-                
-            </div>
+            <footer className="app-footer">
+                <span>MyBlogs frontend</span>
+                <span>React client for the Spring Boot blog API</span>
+            </footer>
+        </div>
     );
 };
 

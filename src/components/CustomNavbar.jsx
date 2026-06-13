@@ -8,58 +8,42 @@ import {
   Nav,
   NavItem,
   NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  NavbarText,
 } from 'reactstrap';
 
-const CustomNavbar=()=>{
+const CustomNavbar = () => {
 
-    const [isOpen, setIsOpen]=useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-    return (
-    <div>
+  return (
       <Navbar 
-        color="dark"
+        className="app-navbar"
         dark
         expand="md"
-        fixed=""
       >
-        <NavbarBrand tag={ReactLink} to="/">MyBlogs</NavbarBrand>
-        <NavbarToggler onClick={()=>setIsOpen(!isOpen)} />
+        <NavbarBrand className="brand-mark" tag={ReactLink} to="/">MyBlogs</NavbarBrand>
+        <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="me-auto" navbar>
             <NavItem>
+              <NavLink tag={ReactLink} to="/">Home</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={ReactLink} to="/services">Capabilities</NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink tag={ReactLink} to="/about">About</NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink tag={ReactLink} to="/login">
-                Login
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={ReactLink} to="/signup">
-                Signup
-              </NavLink>
-            </NavItem>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                More
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem tag={ReactLink} to="/services">Services</DropdownItem>
-                <DropdownItem>Contact us</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>youtube</DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
           </Nav>
-          <NavbarText>Youtube</NavbarText>
+          <Nav navbar>
+            <NavItem>
+              <NavLink tag={ReactLink} to="/login">Login</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className="nav-cta" tag={ReactLink} to="/signup">Create account</NavLink>
+            </NavItem>
+          </Nav>
         </Collapse>
       </Navbar>
-    </div>
   )
 };
 

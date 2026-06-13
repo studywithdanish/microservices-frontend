@@ -1,34 +1,92 @@
 import { Form, Row, Container, Col, Card, CardBody, CardHeader, FormGroup, Label, Input, Button } from "reactstrap";
 import Base from "../components/Base";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import { login } from "../services/user-service";
 
-const Login=()=>{
+const initialCredentials = {
+    username: "",
+    password: "",
+};
+
+const Login = () => {
+    const [credentials, setCredentials] = useState(initialCredentials);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setCredentials((currentCredentials) => ({
+            ...currentCredentials,
+            [name]: value,
+        }));
+    };
+
+    const resetForm = () => {
+        setCredentials(initialCredentials);
+    };
+
+    const submitForm = async (event) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const response = await login(credentials);
+            localStorage.setItem("authToken", response.token);
+            toast.success("Login successful");
+            resetForm();
+        } catch (error) {
+            const message = error?.response?.data?.message || "Unable to login. Please check your credentials.";
+            toast.error(message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <Base>
-        
-            <Container>
-                <Row className="mt-4">
-                    <Col sm={{size:6, offset:3}}>
-                        <Card color="dark" inverse>
+            <Container className="form-page">
+                <Row className="justify-content-center">
+                    <Col lg="5" md="7">
+                        <Card className="form-card">
                             <CardHeader>
-                                <h3>Login Here !!</h3>
+                                <p className="eyebrow mb-2">Welcome back</p>
+                                <h1>Login</h1>
                             </CardHeader>
                             <CardBody>
-                                <Form>
-                                    {/* Email field */}
+                                <Form onSubmit={submitForm}>
                                     <FormGroup>
-                                        <Label for="email">Enter Email</Label>
-                                        <Input type="text" id="email"></Input>
+                                        <Label for="username">Email</Label>
+                                        <Input
+                                            type="email"
+                                            id="username"
+                                            name="username"
+                                            value={credentials.username}
+                                            onChange={handleChange}
+                                            placeholder="danish@example.com"
+                                            required
+                                        />
                                     </FormGroup>
-                                    {/* Password field */}
                                     <FormGroup>
-                                        <Label for="password">Enter Password</Label>
-                                        <Input type="password" id="password"></Input>
+                                        <Label for="password">Password</Label>
+                                        <Input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            value={credentials.password}
+                                            onChange={handleChange}
+                                            placeholder="Enter password"
+                                            required
+                                        />
                                     </FormGroup>
 
-                                    <Container className="text-center">
-                                        <Button color="light" outline>Login</Button>
-                                        <Button className="ms-2" outline color="secondary">Reset</Button>
-                                    </Container>
+                                    <div className="form-actions">
+                                        <Button color="primary" type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? "Logging in..." : "Login"}
+                                        </Button>
+                                        <Button type="button" outline color="secondary" onClick={resetForm}>
+                                            Reset
+                                        </Button>
+                                    </div>
                                 </Form>
                             </CardBody>
                         </Card>
