@@ -113,10 +113,12 @@ docker compose up --build
 For a deployed environment, pass the live backend URL at build time:
 
 ```bash
-docker build --build-arg REACT_APP_API_BASE_URL=https://api.your-domain.com -t blog-frontend .
+docker build --build-arg REACT_APP_API_BASE_URL=https://your-domain.com -t blog-frontend .
 ```
 
 The container serves the React build through Nginx and supports client-side routing refreshes for pages like `/login` and `/signup`.
+
+In the first production deployment, the public Nginx reverse proxy can route `/api/**` to the backend on the same domain, so `REACT_APP_API_BASE_URL` can use `https://your-domain.com`. A separate API subdomain can be added later if needed.
 
 ## Dependency And Security Notes
 
