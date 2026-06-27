@@ -1,10 +1,25 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { isLoggedIn, logout } from '../services/auth-service';
 
 const CustomNavbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
+  const [authenticated, setAuthenticated] = useState(isLoggedIn());
+  const location = useLocation();
+  const navigate = useNavigate();
   const closeMenu = () => setIsOpen(false);
+
+  useEffect(() => {
+    setAuthenticated(isLoggedIn());
+  }, [location.pathname]);
+
+  const handleLogout = () => {
+    logout();
+    setAuthenticated(false);
+    closeMenu();
+    navigate("/");
+  };
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark app-navbar">
@@ -37,12 +52,25 @@ const CustomNavbar = () => {
             </li>
           </ul>
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/login" onClick={closeMenu}>Login</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link nav-cta" to="/signup" onClick={closeMenu}>Create account</NavLink>
-            </li>
+            {authenticated ? (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/dashboard" onClick={closeMenu}>Dashboard</NavLink>
+                </li>
+                <li className="nav-item">
+                  <button className="nav-link nav-button" type="button" onClick={handleLogout}>Logout</button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/login" onClick={closeMenu}>Login</NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link nav-cta" to="/signup" onClick={closeMenu}>Create account</NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

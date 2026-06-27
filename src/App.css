@@ -40,6 +40,11 @@
   color: #ffffff;
 }
 
+.nav-button {
+  border: 0;
+  background: transparent;
+}
+
 .app-navbar .nav-cta {
   color: #111827 !important;
   background: #facc15 !important;
@@ -199,6 +204,19 @@
   line-height: 1.6;
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
 .narrow-container {
   max-width: 820px;
 }
@@ -259,6 +277,10 @@
   }
 
   .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid {
     grid-template-columns: 1fr;
   }
 

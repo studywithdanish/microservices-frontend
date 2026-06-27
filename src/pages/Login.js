@@ -2,6 +2,8 @@ import Base from "../components/Base";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { login } from "../services/user-service";
+import { saveToken } from "../services/auth-service";
+import { useNavigate } from "react-router-dom";
 
 const initialCredentials = {
     username: "",
@@ -11,6 +13,7 @@ const initialCredentials = {
 const Login = () => {
     const [credentials, setCredentials] = useState(initialCredentials);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -30,9 +33,10 @@ const Login = () => {
 
         try {
             const response = await login(credentials);
-            localStorage.setItem("authToken", response.token);
+            saveToken(response.token);
             toast.success("Login successful");
             resetForm();
+            navigate("/dashboard");
         } catch (error) {
             const message = error?.response?.data?.message || "Unable to login. Please check your credentials.";
             toast.error(message);
