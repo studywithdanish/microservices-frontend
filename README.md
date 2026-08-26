@@ -2,6 +2,25 @@
 
 Clean React frontend for the Spring Boot blogging API. This project is intentionally lightweight: it gives the backend portfolio a professional user-facing entry point without shifting the main focus away from backend and platform engineering.
 
+**Status:** local integration is complete through the API Gateway. AWS deployment is intentionally deferred.
+
+Backend repository: [studywithdanish/microservices-backend](https://github.com/studywithdanish/microservices-backend)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    UI[React client :3000] -->|Public HTTP and JWT| Gateway[API Gateway :9090]
+    Gateway --> Identity[Identity Service]
+    Gateway --> Post[Post Service]
+    Gateway --> Content[Content Service]
+    Identity --> IdentityDb[(Identity MySQL)]
+    Post --> PostDb[(Post MySQL)]
+    Content --> ContentDb[(Content MySQL)]
+```
+
+The client uses only `REACT_APP_API_BASE_URL`; service addresses remain private behind the gateway.
+
 ## Tech Stack
 
 - React
@@ -16,6 +35,10 @@ Clean React frontend for the Spring Boot blogging API. This project is intention
 - Home page with backend connection summary
 - Login form connected to `/api/v1/auth/login`
 - Signup form connected to `/api/v1/auth/register`
+- Registration validation aligned with the backend 8–72 character password contract
+- Protected dashboard loading the current Identity profile, Content categories, and Post results
+- Authenticated post creation through `/api/posts`
+- Public comment loading and authenticated comment creation through `/api/posts/{postId}/comments`
 - Basic about and capabilities pages
 - Environment-based backend URL configuration
 - Docker and Nginx production runtime
@@ -57,6 +80,8 @@ By default it expects the backend at:
 http://localhost:9090
 ```
 
+For a fresh end-to-end run, start the backend Docker Compose stack first. Register, log in, create a post in the default `General` category, load its comments, and add a comment from the dashboard.
+
 ## Environment Variables
 
 Use `.env.example` as the reference:
@@ -89,6 +114,8 @@ npm run security:audit
 ```
 
 The production audit checks runtime dependencies with `npm audit --omit=dev`. The deployed Docker image serves static assets through Nginx and does not ship the Node build toolchain.
+
+The UI tests cover the home page, registration password contract, multi-service dashboard load, post creation, comment loading, and comment creation.
 
 ## Docker Runtime
 
@@ -130,8 +157,8 @@ Recent cleanup:
 - Added a production dependency audit script
 - Kept the runtime image on Nginx instead of a Node server
 
-The remaining full `npm audit` warnings come from the Create React App build toolchain. They are not shipped in the Nginx runtime image, but a future modernization step can migrate from Create React App to Vite.
+The remaining full `npm audit` warnings come from the Create React App build toolchain. They are not shipped in the Nginx runtime image, but a future modernization step should migrate from Create React App to Vite.
 
 ## Portfolio Positioning
 
-This frontend supports full-stack role screening while keeping the project backend-led. The backend repository contains the main engineering depth: Spring Boot 3, Spring Security 6, JWT, Docker, Jenkins, tests, Actuator, and the deployment/microservices migration roadmap.
+This frontend supports full-stack role screening while keeping the project backend-led. The backend repository contains the main engineering depth: Spring Boot 3, Spring Security 6, JWT, API Gateway, database-per-service ownership, Docker, Jenkins, tests, Actuator, and the microservices migration history.

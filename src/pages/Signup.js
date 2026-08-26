@@ -39,8 +39,8 @@ const Signup = () => {
         if (!data.email || !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(data.email)) {
             validationErrors.email = "Email address is not valid";
         }
-        if (!data.password || data.password.length < 3 || data.password.length > 10) {
-            validationErrors.password = "Password must be 3 to 10 characters";
+        if (!data.password || data.password.length < 8 || data.password.length > 72) {
+            validationErrors.password = "Password must be 8 to 72 characters";
         }
         if (!data.about.trim()) {
             validationErrors.about = "About is required";
@@ -125,7 +125,7 @@ const Signup = () => {
                                         <input
                                             className={`form-control ${errors.password ? "is-invalid" : ""}`}
                                             type="password"
-                                            placeholder="3 to 10 characters"
+                                            placeholder="8 to 72 characters"
                                             id="password"
                                             name="password"
                                             onChange={handleChange}

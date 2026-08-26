@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { login } from "../services/user-service";
 import { saveToken } from "../services/auth-service";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const initialCredentials = {
     username: "",

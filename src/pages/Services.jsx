@@ -24,14 +24,14 @@ const Services = () => {
                         </div>
                         <div className="col-md-6 col-lg-3">
                             <div className="feature-card">
-                                <h3>API ready</h3>
-                                <p>Uses an environment variable for backend URL configuration.</p>
+                                <h3>Service dashboard</h3>
+                                <p>Loads Identity, Post, and Content data through one gateway URL.</p>
                             </div>
                         </div>
                         <div className="col-md-6 col-lg-3">
                             <div className="feature-card">
-                                <h3>Portfolio fit</h3>
-                                <p>Supports full-stack screening without hiding the backend-first focus.</p>
+                                <h3>Content workflow</h3>
+                                <p>Creates posts and comments while the backend enforces ownership and references.</p>
                             </div>
                         </div>
                     </div>

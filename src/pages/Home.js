@@ -1,5 +1,5 @@
 import Base from "../components/Base";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { API_BASE_URL } from "../services/helper";
 
 const Home = () => {
@@ -37,8 +37,8 @@ const Home = () => {
                                         <span>/actuator/health</span>
                                     </div>
                                     <div>
-                                        <strong>Docs</strong>
-                                        <span>/swagger-ui</span>
+                                        <strong>Info</strong>
+                                        <span>/actuator/info</span>
                                     </div>
                                     <div>
                                         <strong>Content</strong>
