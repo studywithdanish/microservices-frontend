@@ -44,7 +44,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    runCommand('npm run test:ci -- --runInBand')
+                    runCommand('npm run test:ci')
                 }
             }
         }

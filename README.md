@@ -115,7 +115,7 @@ npm run security:audit
 
 The production audit checks runtime dependencies with `npm audit --omit=dev`. The deployed Docker image serves static assets through Nginx and does not ship the Node build toolchain.
 
-The UI tests cover the home page, registration password contract, multi-service dashboard load, post creation, comment loading, and comment creation.
+The cross-platform CI test runner discovers all `*.test.*` and `*.spec.*` files under `src` and runs them by explicit path. This also works when Jenkins Home is a hidden `.jenkins` directory. The UI tests cover the home page, registration password contract, multi-service dashboard load, post creation, comment loading, and comment creation.
 
 ## Docker Runtime
 
