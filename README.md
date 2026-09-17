@@ -2,7 +2,7 @@
 
 Clean React frontend for the Spring Boot blogging API. This project is intentionally lightweight: it gives the backend portfolio a professional user-facing entry point without shifting the main focus away from backend and platform engineering.
 
-**Status:** local integration is complete through the API Gateway. AWS deployment is intentionally deferred.
+**Status:** local integration, Jenkins CI, and local Kubernetes deployment are complete through the API Gateway. AWS deployment is intentionally deferred.
 
 Backend repository: [studywithdanish/microservices-backend](https://github.com/studywithdanish/microservices-backend)
 
@@ -115,7 +115,7 @@ npm run security:audit
 
 The production audit checks runtime dependencies with `npm audit --omit=dev`. The deployed Docker image serves static assets through Nginx and does not ship the Node build toolchain.
 
-The UI tests cover the home page, registration password contract, multi-service dashboard load, post creation, comment loading, and comment creation.
+The cross-platform CI test runner discovers all `*.test.*` and `*.spec.*` files under `src` and runs them by explicit path. This also works when Jenkins Home is a hidden `.jenkins` directory. The UI tests cover the home page, registration password contract, multi-service dashboard load, post creation, comment loading, and comment creation.
 
 ## Docker Runtime
 
@@ -146,6 +146,25 @@ docker build --build-arg REACT_APP_API_BASE_URL=https://your-domain.com -t blog-
 The container serves the React build through Nginx and supports client-side routing refreshes for pages like `/login` and `/signup`.
 
 In the first production deployment, the public Nginx reverse proxy can route `/api/**` to the backend on the same domain, so `REACT_APP_API_BASE_URL` can use `https://your-domain.com`. A separate API subdomain can be added later if needed.
+
+## Jenkins Pipeline
+
+The repository-level `Jenkinsfile` runs the complete frontend CI flow:
+
+- Clean dependency installation with `npm ci`
+- All non-interactive unit tests
+- Production dependency vulnerability audit
+- Optimized React production build
+- Versioned and `latest` Docker image builds
+- Build artifact archival and workspace cleanup
+
+The local Windows Jenkins agent expects Node.js in `D:\\Softwares`. It uses `C:\\JenkinsWorkspaces\\microservices-frontend-ci` because Jest excludes test discovery when the project root is inside Jenkins Home's hidden `.jenkins` directory. Linux agents should replace the Windows-specific `customWorkspace` value with an appropriate agent path.
+
+## Kubernetes Runtime
+
+The backend repository owns the full Kubernetes topology and deploys this frontend as an Nginx container. Nginx serves the React application and proxies same-origin `/api/**` and `/actuator/**` requests to the internal API Gateway.
+
+Follow the backend repository's `deploy/k8s/README.md` runbook to build the frontend image, deploy the platform, and run the cross-service smoke test.
 
 ## Dependency And Security Notes
 
