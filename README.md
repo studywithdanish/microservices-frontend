@@ -158,7 +158,7 @@ The repository-level `Jenkinsfile` runs the complete frontend CI flow:
 - Versioned and `latest` Docker image builds
 - Build artifact archival and workspace cleanup
 
-The local Windows Jenkins agent expects Node.js in `D:\\Softwares`. Linux agents use their configured `PATH`.
+The local Windows Jenkins agent expects Node.js in `D:\\Softwares`. It uses `C:\\JenkinsWorkspaces\\microservices-frontend-ci` because Jest excludes test discovery when the project root is inside Jenkins Home's hidden `.jenkins` directory. Linux agents should replace the Windows-specific `customWorkspace` value with an appropriate agent path.
 
 ## Kubernetes Runtime
 

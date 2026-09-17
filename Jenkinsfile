@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        node {
+            label 'built-in'
+            customWorkspace 'C:\\JenkinsWorkspaces\\microservices-frontend-ci'
+        }
+    }
 
     options {
         timestamps()
