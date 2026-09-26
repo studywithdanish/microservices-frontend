@@ -14,9 +14,13 @@ flowchart LR
     Gateway --> Identity[Identity Service]
     Gateway --> Post[Post Service]
     Gateway --> Content[Content Service]
+    Gateway --> Notification[Notification Service]
     Identity --> IdentityDb[(Identity MySQL)]
     Post --> PostDb[(Post MySQL)]
     Content --> ContentDb[(Content MySQL)]
+    Post -->|Transactional outbox| Kafka[(Kafka)]
+    Kafka --> Notification
+    Notification --> NotificationDb[(Notification MySQL)]
 ```
 
 The client uses only `REACT_APP_API_BASE_URL`; service addresses remain private behind the gateway.
@@ -37,8 +41,14 @@ The client uses only `REACT_APP_API_BASE_URL`; service addresses remain private 
 - Signup form connected to `/api/v1/auth/register`
 - Registration validation aligned with the backend 8–72 character password contract
 - Protected dashboard loading the current Identity profile, Content categories, and Post results
+- React Context-based authentication shared by routes, navigation, and pages
+- Central Axios request/response interceptors for JWT propagation and expired sessions
 - Authenticated post creation through `/api/posts`
-- Public comment loading and authenticated comment creation through `/api/posts/{postId}/comments`
+- Server-side post pagination and keyword search
+- Owner/admin post editing and two-step deletion
+- Public comment loading plus authenticated comment creation and owner/admin deletion
+- Kafka-backed notification feed with unread state and mark-as-read actions
+- Feature-oriented dashboard components coordinated by a reusable custom hook
 - Basic about and capabilities pages
 - Environment-based backend URL configuration
 - Docker and Nginx production runtime
@@ -115,7 +125,11 @@ npm run security:audit
 
 The production audit checks runtime dependencies with `npm audit --omit=dev`. The deployed Docker image serves static assets through Nginx and does not ship the Node build toolchain.
 
-The cross-platform CI test runner discovers all `*.test.*` and `*.spec.*` files under `src` and runs them by explicit path. This also works when Jenkins Home is a hidden `.jenkins` directory. The UI tests cover the home page, registration password contract, multi-service dashboard load, post creation, comment loading, and comment creation.
+The cross-platform CI test runner discovers all `*.test.*` and `*.spec.*` files under `src` and runs them by explicit path. This also works when Jenkins Home is a hidden `.jenkins` directory. The UI tests cover the home page, registration password contract, multi-service dashboard load, post and comment creation/deletion, post search and editing, two-step destructive confirmation, and Kafka notification state.
+
+## React Learning Guide
+
+Use [`docs/REACT_LEARNING_GUIDE.md`](docs/REACT_LEARNING_GUIDE.md) to study this application feature by feature. It maps the implementation to the React concepts you should be able to explain in an interview and includes practical exercises that build on the current code.
 
 ## Docker Runtime
 
@@ -176,7 +190,7 @@ Recent cleanup:
 - Added a production dependency audit script
 - Kept the runtime image on Nginx instead of a Node server
 
-The remaining full `npm audit` warnings come from the Create React App build toolchain. They are not shipped in the Nginx runtime image, but a future modernization step should migrate from Create React App to Vite.
+The remaining full `npm audit` warnings come from the Create React App build toolchain. They are not shipped in the Nginx runtime image. Migrating from Create React App to Vite is intentionally reserved for a separate change so build-system risk is isolated from this functional React upgrade.
 
 ## Portfolio Positioning
 

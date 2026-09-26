@@ -2,8 +2,8 @@ import Base from "../components/Base";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { login } from "../services/user-service";
-import { saveToken } from "../services/auth-service";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 const initialCredentials = {
     username: "",
@@ -14,6 +14,7 @@ const Login = () => {
     const [credentials, setCredentials] = useState(initialCredentials);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+    const { signIn } = useAuth();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -33,7 +34,7 @@ const Login = () => {
 
         try {
             const response = await login(credentials);
-            saveToken(response.token);
+            signIn(response.token);
             toast.success("Login successful");
             resetForm();
             navigate("/dashboard");

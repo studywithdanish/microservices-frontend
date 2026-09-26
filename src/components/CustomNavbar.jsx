@@ -1,22 +1,16 @@
-import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router';
-import { isLoggedIn, logout } from '../services/auth-service';
+import { useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router';
+import { useAuth } from '../context/AuthContext';
 
 const CustomNavbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
-  const [authenticated, setAuthenticated] = useState(isLoggedIn());
-  const location = useLocation();
+  const { authenticated, signOut } = useAuth();
   const navigate = useNavigate();
   const closeMenu = () => setIsOpen(false);
 
-  useEffect(() => {
-    setAuthenticated(isLoggedIn());
-  }, [location.pathname]);
-
   const handleLogout = () => {
-    logout();
-    setAuthenticated(false);
+    signOut();
     closeMenu();
     navigate("/");
   };

@@ -1,15 +1,8 @@
-import { getToken } from "./auth-service";
 import { myAxios } from "./helper";
-
-const authorizedConfig = () => ({
-    headers: {
-        Authorization: `Bearer ${getToken()}`,
-    },
-});
 
 export const getCurrentUser = () => {
     return myAxios
-        .get("/api/v1/auth/me", authorizedConfig())
+        .get("/api/v1/auth/me")
         .then((response) => response.data);
 };
 
@@ -19,12 +12,12 @@ export const getCategories = () => {
         .then((response) => response.data);
 };
 
-export const getPosts = () => {
+export const getPosts = ({ pageNo = 0, pageSize = 5 } = {}) => {
     return myAxios
         .get("/api/posts", {
             params: {
-                pageNo: 0,
-                pageSize: 20,
+                pageNo,
+                pageSize,
                 sortBy: "addedDate",
                 sortDir: "desc",
             },
@@ -34,7 +27,25 @@ export const getPosts = () => {
 
 export const createPost = (post) => {
     return myAxios
-        .post("/api/posts", post, authorizedConfig())
+        .post("/api/posts", post)
+        .then((response) => response.data);
+};
+
+export const updatePost = (postId, post) => {
+    return myAxios
+        .put(`/api/post/${postId}`, post)
+        .then((response) => response.data);
+};
+
+export const deletePost = (postId) => {
+    return myAxios
+        .delete(`/api/post/${postId}`)
+        .then((response) => response.data);
+};
+
+export const searchPosts = (keywords) => {
+    return myAxios
+        .get(`/api/posts/search/${encodeURIComponent(keywords)}`)
         .then((response) => response.data);
 };
 
@@ -46,6 +57,24 @@ export const getComments = (postId) => {
 
 export const createComment = (postId, content) => {
     return myAxios
-        .post(`/api/posts/${postId}/comments`, { content }, authorizedConfig())
+        .post(`/api/posts/${postId}/comments`, { content })
+        .then((response) => response.data);
+};
+
+export const deleteComment = (commentId) => {
+    return myAxios
+        .delete(`/api/comments/${commentId}`)
+        .then((response) => response.data);
+};
+
+export const getNotifications = () => {
+    return myAxios
+        .get("/api/notifications")
+        .then((response) => response.data);
+};
+
+export const markNotificationRead = (notificationId) => {
+    return myAxios
+        .put(`/api/notifications/${notificationId}/read`)
         .then((response) => response.data);
 };

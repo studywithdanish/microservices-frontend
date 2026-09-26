@@ -1,7 +1,15 @@
 const TOKEN_KEY = "authToken";
+export const AUTH_STATE_CHANGED_EVENT = "auth-state-changed";
+
+const notifyAuthStateChanged = () => {
+    if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event(AUTH_STATE_CHANGED_EVENT));
+    }
+};
 
 export const saveToken = (token) => {
     localStorage.setItem(TOKEN_KEY, token);
+    notifyAuthStateChanged();
 };
 
 export const getToken = () => {
@@ -14,6 +22,7 @@ export const isLoggedIn = () => {
 
 export const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
+    notifyAuthStateChanged();
 };
 
 export const getTokenPreview = () => {
