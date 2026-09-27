@@ -54,6 +54,14 @@ pipeline {
             }
         }
 
+        stage('Type Check') {
+            steps {
+                script {
+                    runCommand('npm run typecheck')
+                }
+            }
+        }
+
         stage('Production Dependency Audit') {
             steps {
                 script {
@@ -70,6 +78,14 @@ pipeline {
             }
         }
 
+        stage('End-to-End Test') {
+            steps {
+                script {
+                    runCommand('npm run test:e2e')
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -81,7 +97,7 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: 'build/**', fingerprint: true
+            archiveArtifacts artifacts: 'dist/**', fingerprint: true
         }
         cleanup {
             cleanWs(deleteDirs: true, disableDeferredWipeout: true)

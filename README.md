@@ -10,7 +10,7 @@ Backend repository: [studywithdanish/microservices-backend](https://github.com/s
 
 ```mermaid
 flowchart LR
-    UI[React client :3000] -->|Public HTTP and JWT| Gateway[API Gateway :9090]
+    UI[React client :3000] -->|HTTPS and HttpOnly cookie| Gateway[API Gateway :9090]
     Gateway --> Identity[Identity Service]
     Gateway --> Post[Post Service]
     Gateway --> Content[Content Service]
@@ -23,16 +23,18 @@ flowchart LR
     Notification --> NotificationDb[(Notification MySQL)]
 ```
 
-The client uses only `REACT_APP_API_BASE_URL`; service addresses remain private behind the gateway.
+The client uses only `VITE_API_BASE_URL`; service addresses remain private behind the gateway. The browser never reads the JWT: Identity Service issues it as an `HttpOnly` cookie and the gateway translates that cookie to an internal bearer header.
 
 ## Tech Stack
 
-- React
+- React with TypeScript
 - React Router
+- TanStack React Query
 - Bootstrap
 - Axios
 - React Toastify
-- Jest and React Testing Library
+- Vite and Vitest
+- React Testing Library and Playwright
 
 ## Current Scope
 
@@ -41,8 +43,10 @@ The client uses only `REACT_APP_API_BASE_URL`; service addresses remain private 
 - Signup form connected to `/api/v1/auth/register`
 - Registration validation aligned with the backend 8–72 character password contract
 - Protected dashboard loading the current Identity profile, Content categories, and Post results
-- React Context-based authentication shared by routes, navigation, and pages
-- Central Axios request/response interceptors for JWT propagation and expired sessions
+- React Context-based session state shared by routes, navigation, and pages
+- Secure `HttpOnly`, `SameSite` authentication cookies with no JWT in browser storage
+- Central credentialed Axios client and expired-session handling
+- React Query caching, invalidation, background notification refresh, and mutation state
 - Authenticated post creation through `/api/posts`
 - Server-side post pagination and keyword search
 - Owner/admin post editing and two-step deletion
@@ -56,7 +60,7 @@ The client uses only `REACT_APP_API_BASE_URL`; service addresses remain private 
 
 ## Runtime Requirement
 
-Use Node 20+ for local development and CI. The Docker build already uses Node 20.
+Use Node 22.12+ for local development and CI. The Docker build uses Node 22.
 
 ## Run Locally
 
@@ -97,11 +101,11 @@ For a fresh end-to-end run, start the backend Docker Compose stack first. Regist
 Use `.env.example` as the reference:
 
 ```text
-REACT_APP_API_BASE_URL=http://localhost:9090
+VITE_API_BASE_URL=http://localhost:9090
 FRONTEND_PORT=3000
 ```
 
-Use `.env.production.example` as the deployment reference. For deployed environments, set `REACT_APP_API_BASE_URL` to the live backend URL before building the frontend.
+Use `.env.production.example` as the deployment reference. For deployed environments, set `VITE_API_BASE_URL` to the live backend URL before building the frontend. Prefer `/` when the frontend and gateway are exposed through the same reverse proxy.
 
 ## Quality Checks
 
@@ -109,6 +113,13 @@ Run tests:
 
 ```bash
 npm run test:ci
+```
+
+Run the TypeScript compiler and the browser-level authentication test:
+
+```bash
+npm run typecheck
+npm run test:e2e
 ```
 
 Create a production build:
@@ -125,7 +136,7 @@ npm run security:audit
 
 The production audit checks runtime dependencies with `npm audit --omit=dev`. The deployed Docker image serves static assets through Nginx and does not ship the Node build toolchain.
 
-The cross-platform CI test runner discovers all `*.test.*` and `*.spec.*` files under `src` and runs them by explicit path. This also works when Jenkins Home is a hidden `.jenkins` directory. The UI tests cover the home page, registration password contract, multi-service dashboard load, post and comment creation/deletion, post search and editing, two-step destructive confirmation, and Kafka notification state.
+Vitest covers application routing, the authentication context, credentialed HTTP behavior, registration validation, multi-service dashboard loading, pagination, post/comment workflows, and Kafka notification state. Playwright verifies login, creation of an `HttpOnly` cookie, restoration of the server session, protected navigation, and dashboard rendering in a real browser.
 
 ## React Learning Guide
 
@@ -136,7 +147,7 @@ Use [`docs/REACT_LEARNING_GUIDE.md`](docs/REACT_LEARNING_GUIDE.md) to study this
 Build the production image:
 
 ```bash
-docker build --build-arg REACT_APP_API_BASE_URL=http://localhost:9090 -t blog-frontend .
+docker build --build-arg VITE_API_BASE_URL=http://localhost:9090 -t blog-frontend .
 ```
 
 Run the production container:
@@ -154,25 +165,25 @@ docker compose up --build
 For a deployed environment, pass the live backend URL at build time:
 
 ```bash
-docker build --build-arg REACT_APP_API_BASE_URL=https://your-domain.com -t blog-frontend .
+docker build --build-arg VITE_API_BASE_URL=https://your-domain.com -t blog-frontend .
 ```
 
 The container serves the React build through Nginx and supports client-side routing refreshes for pages like `/login` and `/signup`.
 
-In the first production deployment, the public Nginx reverse proxy can route `/api/**` to the backend on the same domain, so `REACT_APP_API_BASE_URL` can use `https://your-domain.com`. A separate API subdomain can be added later if needed.
+In production, the public reverse proxy should route `/api/**` to the gateway on the same HTTPS domain and `VITE_API_BASE_URL` can be `/`. Same-origin routing works naturally with the secure cookie and avoids unnecessary cross-origin complexity.
 
 ## Jenkins Pipeline
 
 The repository-level `Jenkinsfile` runs the complete frontend CI flow:
 
 - Clean dependency installation with `npm ci`
-- All non-interactive unit tests
+- TypeScript validation, unit/integration tests, and a Playwright browser test
 - Production dependency vulnerability audit
 - Optimized React production build
 - Versioned and `latest` Docker image builds
 - Build artifact archival and workspace cleanup
 
-The local Windows Jenkins agent expects Node.js in `D:\\Softwares`. It uses `C:\\JenkinsWorkspaces\\microservices-frontend-ci` because Jest excludes test discovery when the project root is inside Jenkins Home's hidden `.jenkins` directory. Linux agents should replace the Windows-specific `customWorkspace` value with an appropriate agent path.
+The local Windows Jenkins agent expects Node.js in `D:\\Softwares` and a system Chrome installation for Playwright. It uses `C:\\JenkinsWorkspaces\\microservices-frontend-ci`; Linux agents should replace the Windows-specific `customWorkspace` with an appropriate agent path and install a Playwright-compatible browser.
 
 ## Kubernetes Runtime
 
@@ -182,16 +193,19 @@ Follow the backend repository's `deploy/k8s/README.md` runbook to build the fron
 
 ## Dependency And Security Notes
 
-Recent cleanup:
+Current production-oriented setup:
 
 - Removed Reactstrap to avoid an unnecessary wrapper dependency and React peer-version warnings
 - Removed unused web-vitals code from the runtime bundle
+- Replaced Create React App with Vite
+- Migrated the application to strict TypeScript
 - Moved test/build tooling to `devDependencies`
 - Added a production dependency audit script
 - Kept the runtime image on Nginx instead of a Node server
+- Removed readable JWT storage from the browser
 
-The remaining full `npm audit` warnings come from the Create React App build toolchain. They are not shipped in the Nginx runtime image. Migrating from Create React App to Vite is intentionally reserved for a separate change so build-system risk is isolated from this functional React upgrade.
+`SameSite=Lax` is appropriate for the same-site deployment shown here. If a future UI and API intentionally run on different sites, introduce an explicit CSRF-token design before changing the cookie to `SameSite=None`.
 
 ## Portfolio Positioning
 
-This frontend supports full-stack role screening while keeping the project backend-led. The backend repository contains the main engineering depth: Spring Boot 3, Spring Security 6, JWT, API Gateway, database-per-service ownership, Docker, Jenkins, tests, Actuator, and the microservices migration history.
+This frontend supports full-stack role screening while keeping the project backend-led. It now demonstrates modern React, TypeScript, server-state management, secure browser authentication, component/integration testing, browser automation, Docker, and Jenkins. The backend repository retains the main engineering depth: Spring Boot 3, Spring Security 6, JWT, API Gateway, database-per-service ownership, Kafka, Docker, Kubernetes, Jenkins, tests, Actuator, and the microservices migration history.

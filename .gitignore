@@ -10,6 +10,11 @@
 
 # production
 /build
+/dist
+*.tsbuildinfo
+/coverage
+/playwright-report
+/test-results
 
 # misc
 .DS_Store

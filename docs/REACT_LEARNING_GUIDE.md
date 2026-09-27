@@ -4,7 +4,7 @@ This guide turns the MyBlogs frontend into a practical React curriculum. The goa
 
 ## 1. Component Composition
 
-Start with `src/pages/Dashboard.js`. It is now a page-level coordinator instead of one large component. It composes:
+Start with `src/pages/Dashboard.tsx`. It is a typed page-level coordinator instead of one large component. It composes:
 
 - `ServiceSummary` for cross-service status
 - `NotificationCenter` for Kafka-backed user notifications
@@ -33,19 +33,19 @@ Be able to explain:
 
 Exercise: display a validation message below the title before submission when it has fewer than five characters.
 
-## 3. Effects And Server State
+## 3. Server State With React Query
 
-`src/features/dashboard/useDashboard.js` loads the profile, categories, posts, and notifications through effects.
+`src/features/dashboard/useDashboard.ts` uses TanStack React Query for categories, posts, notifications, and mutations. The query cache owns remote data while `useState` owns local form and UI state.
 
 Be able to explain:
 
-- Why API calls are side effects
-- Dependency arrays
-- Cleanup guards for components that unmount during a request
 - The difference between local UI state and server state
+- Query keys, stale data, caching, and invalidation
+- Query versus mutation lifecycle states
+- Why notification polling uses `refetchInterval`
 - Why loading, empty, success, and error states all matter
 
-Exercise: refresh the notification list every 30 seconds and clean up the timer when the dashboard unmounts.
+Exercise: add a manual notification refresh action and display its `isFetching` state separately from the initial loading state.
 
 ## 4. Custom Hooks
 
@@ -62,27 +62,27 @@ Exercise: extract notification state and actions into a dedicated `useNotificati
 
 ## 5. Context And Authentication
 
-`src/context/AuthContext.jsx` exposes `authenticated`, `signIn`, and `signOut` to the component tree. `CustomNavbar`, `ProtectedRoute`, `Login`, and `Dashboard` consume the same authentication state.
+`src/context/AuthContext.tsx` exposes `authenticated`, `checkingSession`, `user`, `signIn`, and `signOut`. It restores the session from `/api/v1/auth/me`; the JWT itself remains in an `HttpOnly` cookie that JavaScript cannot read.
 
 Be able to explain:
 
 - The problem Context solves
 - Why Context is suitable for authentication but not automatically suitable for all application state
 - How `ProtectedRoute` performs declarative navigation
-- How the custom browser event keeps local token storage and React state synchronized
-
-Security note: the current portfolio application stores its JWT in local storage. For a production system, discuss secure, `HttpOnly`, `Secure`, and `SameSite` cookies with the backend team to reduce token exposure to cross-site scripting.
+- How React Query keeps the server session and UI synchronized
+- Why an `HttpOnly`, `Secure`, `SameSite` cookie reduces JWT exposure to cross-site scripting
+- Why credentialed CORS and CSRF protection are separate concerns
 
 Exercise: add the signed-in user's name to the navigation bar without making another API request.
 
 ## 6. Axios Interceptors
 
-`src/services/helper.js` centralises HTTP concerns:
+`src/services/helper.ts` centralises HTTP concerns:
 
 - The base gateway URL
 - JSON headers
-- JWT attachment before a request
-- Session clearing after an authenticated `401` response
+- Credentialed requests so the browser manages the secure cookie
+- Session-expired signaling after an authenticated `401` response
 
 Be able to explain why adding an Authorization header separately in every service method causes duplication and inconsistency.
 
@@ -98,7 +98,7 @@ Exercise: add a "mark all visible notifications as read" action using `Promise.a
 
 ## 8. Routing
 
-`src/App.js` declares public and protected routes with React Router.
+`src/App.tsx` declares public and protected routes with React Router.
 
 Be able to explain:
 
@@ -110,7 +110,7 @@ Exercise: add a public `/posts/:postId` route that loads a single post using the
 
 ## 9. Testing Behaviour
 
-`Dashboard.test.js` uses React Testing Library to verify outcomes visible to a user rather than component internals. API functions are mocked at the service boundary.
+`Dashboard.test.tsx` uses React Testing Library and Vitest to verify outcomes visible to a user rather than component internals. API functions are mocked at the service boundary. `e2e/authentication.spec.ts` uses Playwright for the real-browser login and session-restoration path.
 
 Current scenarios cover:
 
@@ -121,6 +121,9 @@ Current scenarios cover:
 - Rendering Kafka notifications and marking one as read
 - Registration validation
 - Application routing
+- Cookie-aware authentication context behavior
+- Credentialed Axios requests
+- Browser-level login and protected navigation
 
 Be able to explain `render`, `screen`, `fireEvent`, async `findBy` queries, and `waitFor`.
 
@@ -129,8 +132,8 @@ Exercise: add a pagination test that moves to the next page and verifies the req
 ## 10. Suggested Study Sequence
 
 1. Trace `App` to `ProtectedRoute` to `Dashboard`.
-2. Trace login from the controlled form to `AuthContext` and local storage.
-3. Trace a post list request from `useDashboard` to `blog-service` and the Axios interceptor.
+2. Trace login from the controlled form to `AuthContext`, Identity Service, the cookie, and the gateway filter.
+3. Trace a post list query from `useDashboard` to `blog-service`, the Axios client, and the React Query cache.
 4. Trace the resulting state into `PostFeed` and `PostCard` props.
 5. Trace a Kafka notification from the backend event to the notification API and UI read state.
 6. Run the tests, deliberately break one behaviour, and explain the failure.
@@ -139,6 +142,8 @@ Useful commands:
 
 ```bash
 npm run test:ci
+npm run typecheck
+npm run test:e2e
 npm run build
 docker compose up --build
 ```
@@ -147,4 +152,4 @@ docker compose up --build
 
 After you can complete the exercises and explain the flows without reading the files, describe this as hands-on personal-project React experience. Keep commercial Java/Spring experience separate from personal React experience. A strong summary is:
 
-> Built and tested a React client for a Spring Boot microservices platform using Context-based authentication, protected routing, reusable components and custom hooks, REST integration, server-side search and pagination, CRUD workflows, and Kafka-backed notifications.
+> Built and tested a TypeScript React client for a Spring Boot microservices platform using secure HttpOnly-cookie authentication, protected routing, TanStack React Query, reusable components and custom hooks, REST integration, server-side pagination, CRUD workflows, Kafka-backed notifications, Vitest, and Playwright.
